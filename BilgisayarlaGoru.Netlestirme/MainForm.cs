@@ -234,6 +234,26 @@ namespace BilgisayarlaGoru.Netlestirme
 
         public int[,,] PictureExtraction(Bitmap image1, Bitmap image2)
         {
+            int[,,] buffer = new int[3, image1.Height, image1.Width];
+
+            for (int y = 0; y < image1.Height; y++)
+            {
+                for (int x = 0; x < image1.Width; x++)
+                {
+                    Color color_1 = image1.GetPixel(x, y);
+                    Color color_2 = image2.GetPixel(x, y);
+
+                    buffer[0, y, x] = Convert.ToInt16(Math.Abs(color_1.R - color_2.R));
+                    buffer[1, y, x] = Convert.ToInt16(Math.Abs(color_1.G - color_2.G));
+                    buffer[2, y, x] = Convert.ToInt16(Math.Abs(color_1.B - color_2.B));
+                }
+            }
+
+            return buffer;
+        }
+
+        public int[,,] PictureAdd(Bitmap image1, Bitmap image2)
+        {
             double scaling = Convert.ToDouble(txt_k.Text); //Keskin kenaları daha iyi görmek için değerini artırıyoruz.
 
             int[,,] buffer = new int[3, image1.Height, image1.Width];
@@ -245,29 +265,9 @@ namespace BilgisayarlaGoru.Netlestirme
                     Color color_1 = image1.GetPixel(x, y);
                     Color color_2 = image2.GetPixel(x, y);
 
-                    buffer[0, y, x] = Convert.ToInt16(scaling * Math.Abs(color_1.R - color_2.R));
-                    buffer[1, y, x] = Convert.ToInt16(scaling * Math.Abs(color_1.G - color_2.G));
-                    buffer[2, y, x] = Convert.ToInt16(scaling * Math.Abs(color_1.B - color_2.B));
-                }
-            }
-
-            return buffer;
-        }
-
-        public int[,,] PictureAdd(Bitmap image1, Bitmap image2)
-        {
-            int[,,] buffer = new int[3, image1.Height, image1.Width];
-
-            for (int y = 0; y < image1.Height; y++)
-            {
-                for (int x = 0; x < image1.Width; x++)
-                {
-                    Color color_1 = image1.GetPixel(x, y);
-                    Color color_2 = image2.GetPixel(x, y);
-
-                    int R = color_1.R + color_2.R;
-                    int G = color_1.G + color_2.G;
-                    int B = color_1.B + color_2.B;
+                    int R = color_1.R + (int)(scaling * color_2.R);
+                    int G = color_1.G + (int)(scaling * color_2.G);
+                    int B = color_1.B + (int)(scaling * color_2.B);
 
                     buffer[0, y, x] = R;
                     buffer[1, y, x] = G;
