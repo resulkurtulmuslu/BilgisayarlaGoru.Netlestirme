@@ -14,13 +14,24 @@ namespace BilgisayarlaGoru.Netlestirme
     {
         Bitmap originalBitmap;
         Bitmap smoothBitmap;
+        Bitmap edgeBitmap;
+        Bitmap sharpBitmap;
 
         int[,,] originalImageBuffer;
         int[,,] smoothImageBuffer;
+        int[,,] edgeImageBuffer;
+        int[,,] edgeNormalizationImageBuffer;
+        int[,,] sharpImageBuffer;
+        int[,,] sharpNormalizationImageBuffer;
 
         public MainForm()
         {
             InitializeComponent();
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            cmb_MeanValue.SelectedIndex = 3;
         }
 
         private void btn_Select_Click(object sender, EventArgs e)
@@ -33,44 +44,83 @@ namespace BilgisayarlaGoru.Netlestirme
             {
                 originalBitmap = new Bitmap(open.FileName);
 
-                originalImageBuffer = new int[3, originalBitmap.Height, originalBitmap.Width];
+                originalImageBuffer = ReadPixel(originalBitmap);
 
                 smoothBitmap = new Bitmap(originalBitmap.Width, originalBitmap.Height);
-                smoothImageBuffer = new int[3, originalBitmap.Height, originalBitmap.Width];
-
-                ReadPixel();
 
                 picture_Original.Image = originalBitmap;
             }
         }
 
-        private void ReadPixel()
-        {
-            for (int row = 0; row < originalBitmap.Height; row++)
-            {
-                for (int column = 0; column < originalBitmap.Width; column++)
-                {
-                    Color color = originalBitmap.GetPixel(column, row);
-
-                    originalImageBuffer[0, row, column] = color.R;
-                    originalImageBuffer[1, row, column] = color.G;
-                    originalImageBuffer[2, row, column] = color.B;
-                }
-            }
-        }
-
         private void btn_Process_Click(object sender, EventArgs e)
         {
-            MeanFilter();
+            smoothBitmap = MeanFilter(originalBitmap);
+            smoothImageBuffer = ReadPixel(smoothBitmap);
+
+            picture_Smooth.Image = smoothBitmap;
+
+            edgeImageBuffer = PictureExtraction(originalBitmap, smoothBitmap);
+            edgeNormalizationImageBuffer = Normalization(edgeImageBuffer);
+            edgeBitmap = BufferToImage(edgeNormalizationImageBuffer);
+
+            picture_Edge.Image = edgeBitmap;
+
+            sharpImageBuffer = PictureAdd(originalBitmap, edgeBitmap);
+            sharpNormalizationImageBuffer = Normalization(sharpImageBuffer);
+            sharpBitmap = BufferToImage(sharpNormalizationImageBuffer);
+
+            picture_Sharp.Image = sharpBitmap;
         }
 
-        private void MeanFilter()
+        private int[,,] ReadPixel(Bitmap bitmap)
+        {
+            int[,,] buffer = new int[3, bitmap.Height, bitmap.Width];
+
+            for (int row = 0; row < bitmap.Height; row++)
+            {
+                for (int column = 0; column < bitmap.Width; column++)
+                {
+                    Color color = bitmap.GetPixel(column, row);
+
+                    buffer[0, row, column] = color.R;
+                    buffer[1, row, column] = color.G;
+                    buffer[2, row, column] = color.B;
+                }
+            }
+
+            return buffer;
+        }
+
+        private Bitmap BufferToImage(int[,,] buffer)
+        {
+            var height = buffer.GetLength(1);
+            var width = buffer.GetLength(2);
+
+            Bitmap bitmap = new Bitmap(width, height);
+
+            for (int i = 0; i < height; i++)
+            {
+                for (int j = 0; j < width; j++)
+                {
+                    int R = buffer[0, i, j];
+                    int G = buffer[1, i, j];
+                    int B = buffer[2, i, j];
+
+                    bitmap.SetPixel(j, i, Color.FromArgb(R, G, B));
+                }
+            }
+
+            return bitmap;
+        }
+
+        private Bitmap MeanFilter(Bitmap bitmap)
         {
             int value = Convert.ToInt16(cmb_MeanValue.SelectedItem);
+            Bitmap outBitmap = new Bitmap(bitmap.Width, bitmap.Height);
 
-            for (int x = (value - 1) / 2; x < originalBitmap.Width - (value - 1) / 2; x++)
+            for (int x = (value - 1) / 2; x < bitmap.Width - (value - 1) / 2; x++)
             {
-                for (int y = (value - 1) / 2; y < originalBitmap.Height - (value - 1) / 2; y++)
+                for (int y = (value - 1) / 2; y < bitmap.Height - (value - 1) / 2; y++)
                 {
                     int sumR = 0, sumG = 0, sumB = 0;
 
@@ -78,7 +128,7 @@ namespace BilgisayarlaGoru.Netlestirme
                     {
                         for (int j = -((value - 1) / 2); j <= (value - 1) / 2; j++)
                         {
-                            Color color = originalBitmap.GetPixel(x + i, y + j);
+                            Color color = bitmap.GetPixel(x + i, y + j);
 
                             sumR += color.R;
                             sumG += color.G;
@@ -92,20 +142,173 @@ namespace BilgisayarlaGoru.Netlestirme
 
                     Color avarageColor = Color.FromArgb(averageR, averageG, averageB);
 
-                    smoothBitmap.SetPixel(x, y, avarageColor);
-
-                    smoothImageBuffer[0, y, x] = avarageColor.R;
-                    smoothImageBuffer[1, y, x] = avarageColor.G;
-                    smoothImageBuffer[2, y, x] = avarageColor.B;
-
-                    picture_Smooth.Image = smoothBitmap;
+                    outBitmap.SetPixel(x, y, avarageColor);
                 }
             }
+
+            return outBitmap;
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        public int[,,] PictureExtraction(Bitmap image1, Bitmap image2)
         {
-            cmb_MeanValue.SelectedIndex = 3;
+            double scaling = Convert.ToDouble(txt_k.Text); //Keskin kenaları daha iyi görmek için değerini artırıyoruz.
+
+            int[,,] buffer = new int[3, image1.Height, image1.Width];
+
+            for (int y = 0; y < image1.Height; y++)
+            {
+                for (int x = 0; x < image1.Width; x++)
+                {
+                    Color color_1 = image1.GetPixel(x, y);
+                    Color color_2 = image2.GetPixel(x, y);
+
+                    buffer[0, y, x] = Convert.ToInt16(scaling * Math.Abs(color_1.R - color_2.R));
+                    buffer[1, y, x] = Convert.ToInt16(scaling * Math.Abs(color_1.G - color_2.G));
+                    buffer[2, y, x] = Convert.ToInt16(scaling * Math.Abs(color_1.B - color_2.B));
+                }
+            }
+
+            return buffer;
+        }
+
+        public int[,,] PictureAdd(Bitmap image1, Bitmap image2)
+        {
+            int[,,] buffer = new int[3, image1.Height, image1.Width];
+
+            for (int y = 0; y < image1.Height; y++)
+            {
+                for (int x = 0; x < image1.Width; x++)
+                {
+                    Color color_1 = image1.GetPixel(x, y);
+                    Color color_2 = image2.GetPixel(x, y);
+
+                    int R = color_1.R + color_1.R;
+                    int G = color_1.G + color_1.G;
+                    int B = color_1.B + color_1.B;
+
+                    buffer[0, y, x] = R;
+                    buffer[1, y, x] = G;
+                    buffer[2, y, x] = B;
+                }
+            }
+
+            return buffer;
+        }
+
+        public int[,,] Normalization(int[,,] buffer)
+        {
+            //Pout = ( Pin - MinValue ) * ( ( 255 - 0 ) / ( MaxValue - MinValue ) ) + 0
+            int limitMinVal = 0;
+            int limitMaxVal = 255;
+
+            int min = BufferMin(buffer);
+            int max = BufferMax(buffer);
+
+            var lenght_1 = buffer.GetLength(0);
+            var lenght_2 = buffer.GetLength(1);
+            var lenght_3 = buffer.GetLength(2);
+
+            int[,,] outBuffer = new int[lenght_1, lenght_2, lenght_3];
+
+            for (int i = 0; i < lenght_1; i++)
+            {
+                for (int j = 0; j < lenght_2; j++)
+                {
+                    for (int k = 0; k < lenght_3; k++)
+                    {
+                        int inVal = buffer[i, j, k];
+
+                        int outVal = (int)((inVal - min) * (decimal)((decimal)(limitMaxVal - limitMinVal) / (decimal)(max - min)) + limitMinVal);
+
+                        outBuffer[i, j, k] = outVal;
+                    }
+                }
+            }
+
+            return outBuffer;
+        }
+
+        public int BufferMin(int[,,] buffer)
+        {
+            bool first = true;
+            int minValue = 0;
+
+            var lenght_1 = buffer.GetLength(0);
+            var lenght_2 = buffer.GetLength(1);
+            var lenght_3 = buffer.GetLength(2);
+
+            for (int i = 0; i < lenght_1; i++)
+            {
+                for (int j = 0; j < lenght_2; j++)
+                {
+                    for (int k = 0; k < lenght_3; k++)
+                    {
+                        int value = buffer[i, j, k];
+
+                        if (first)
+                        {
+                            minValue = value;
+                            first = false;
+                        }
+                        else
+                        {
+                            if (value < minValue)
+                            {
+                                minValue = value;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return minValue;
+        }
+
+        public int BufferMax(int[,,] buffer)
+        {
+            bool first = true;
+            int maxValue = 0;
+
+            var lenght_1 = buffer.GetLength(0);
+            var lenght_2 = buffer.GetLength(1);
+            var lenght_3 = buffer.GetLength(2);
+
+            for (int i = 0; i < lenght_1; i++)
+            {
+                for (int j = 0; j < lenght_2; j++)
+                {
+                    for (int k = 0; k < lenght_3; k++)
+                    {
+                        int value = buffer[i, j, k];
+
+                        if (first)
+                        {
+                            maxValue = value;
+                            first = false;
+                        }
+                        else
+                        {
+                            if (value > maxValue)
+                            {
+                                maxValue = value;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return maxValue;
+        }
+
+        protected void OnKeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsNumber(e.KeyChar) & (Keys)e.KeyChar != Keys.Back
+                & e.KeyChar != ',')
+            {
+                e.Handled = true;
+            }
+
+            base.OnKeyPress(e);
         }
     }
 }

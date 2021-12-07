@@ -44,6 +44,8 @@ namespace BilgisayarlaGoru.Netlestirme
             this.picture_Edge = new System.Windows.Forms.PictureBox();
             this.picture_Sharp = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
+            this.txt_k = new System.Windows.Forms.ToolStripTextBox();
             this.toolStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picture_Smooth)).BeginInit();
@@ -57,8 +59,10 @@ namespace BilgisayarlaGoru.Netlestirme
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btn_Select,
             this.btn_Process,
+            this.txt_k,
+            this.toolStripLabel1,
             this.cmb_MeanValue,
-            this.toolStripLabel1});
+            this.toolStripLabel2});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(800, 25);
@@ -100,8 +104,8 @@ namespace BilgisayarlaGoru.Netlestirme
             // 
             this.toolStripLabel1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.toolStripLabel1.Name = "toolStripLabel1";
-            this.toolStripLabel1.Size = new System.Drawing.Size(146, 22);
-            this.toolStripLabel1.Text = "Mean Filtre Şablon Boyutu";
+            this.toolStripLabel1.Size = new System.Drawing.Size(143, 22);
+            this.toolStripLabel1.Text = "k ( Keskinleştirme Değeri )";
             // 
             // tableLayoutPanel1
             // 
@@ -130,6 +134,7 @@ namespace BilgisayarlaGoru.Netlestirme
             // label4
             // 
             this.label4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.label4.Location = new System.Drawing.Point(403, 404);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(394, 21);
@@ -140,6 +145,7 @@ namespace BilgisayarlaGoru.Netlestirme
             // label3
             // 
             this.label3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.label3.Location = new System.Drawing.Point(3, 404);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(394, 21);
@@ -150,6 +156,7 @@ namespace BilgisayarlaGoru.Netlestirme
             // label2
             // 
             this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.label2.Location = new System.Drawing.Point(403, 192);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(394, 20);
@@ -204,12 +211,30 @@ namespace BilgisayarlaGoru.Netlestirme
             // label1
             // 
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.label1.Location = new System.Drawing.Point(3, 192);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(394, 20);
             this.label1.TabIndex = 4;
             this.label1.Text = "Orijinal Görüntü";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // toolStripLabel2
+            // 
+            this.toolStripLabel2.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripLabel2.Name = "toolStripLabel2";
+            this.toolStripLabel2.Size = new System.Drawing.Size(146, 22);
+            this.toolStripLabel2.Text = "Mean Filtre Şablon Boyutu";
+            // 
+            // txt_k
+            // 
+            this.txt_k.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.txt_k.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txt_k.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txt_k.Name = "txt_k";
+            this.txt_k.Size = new System.Drawing.Size(100, 25);
+            this.txt_k.Text = "0,2";
+            this.txt_k.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.OnKeyPress);
             // 
             // MainForm
             // 
@@ -252,5 +277,7 @@ namespace BilgisayarlaGoru.Netlestirme
         private System.Windows.Forms.ToolStripButton btn_Process;
         private System.Windows.Forms.ToolStripComboBox cmb_MeanValue;
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
+        private System.Windows.Forms.ToolStripLabel toolStripLabel2;
+        private System.Windows.Forms.ToolStripTextBox txt_k;
     }
 }
