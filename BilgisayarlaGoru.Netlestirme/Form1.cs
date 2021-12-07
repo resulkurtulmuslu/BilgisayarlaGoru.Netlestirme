@@ -193,5 +193,66 @@ namespace BilgisayarlaGoru.Netlestirme
             }
             return outputImage;
         }
+
+        public Bitmap PictureNormalization(Bitmap image, int templateSize, int width, int height, int bigValue, int littleValue)
+        {
+            int sumR = 0;
+            int sumG = 0;
+            int sumB = 0;
+
+            Bitmap outputImage = new Bitmap(width, height);
+
+            int x, y, i, j;
+            int R, G, B;
+
+            int[] Matrix = { 0, -2, 0, -2, 11, -2, 0, -2, 0 };
+
+            int matrixTotal = 3;
+
+            for (x = (templateSize - 1) / 2; x < width - (templateSize - 1) / 2; x++) //Resmi taramaya şablonun yarısı kadar dış kenarlardan içeride başlayacak ve bitirecek.
+            {
+                for (y = (templateSize - 1) / 2; y < height - (templateSize - 1) / 2; y++)
+                {
+                    sumR = 0;
+                    sumG = 0;
+                    sumB = 0;
+
+                    int k = 0; 
+
+                    for (i = -((templateSize - 1) / 2); i <= (templateSize - 1) / 2; i++)
+                    {
+                        for (j = -((templateSize - 1) / 2); j <= (templateSize - 1) / 2; j++)
+                        {
+                            Color readColor = image.GetPixel(x + i, y + j);
+
+                            sumR += readColor.R * Matrix[k];
+                            sumG += readColor.G * Matrix[k];
+                            sumB += readColor.B * Matrix[k];
+
+                            k++;
+                        }
+                    }
+                    R = sumR / matrixTotal;
+                    G = sumG / matrixTotal;
+                    B = sumB / matrixTotal;
+
+                    int YeniR = (255 * (R - littleValue)) / (bigValue - littleValue);
+                    int YeniG = (255 * (G - littleValue)) / (bigValue - littleValue);
+                    int YeniB = (255 * (B - littleValue)) / (bigValue - littleValue);
+
+                    if (YeniR > 255) YeniR = 255;
+                    if (YeniG > 255) YeniG = 255;
+                    if (YeniB > 255) YeniB = 255;
+
+                    if (YeniR < 0) YeniR = 0;
+                    if (YeniG < 0) YeniG = 0;
+                    if (YeniB < 0) YeniB = 0;
+
+                    outputImage.SetPixel(x, y, Color.FromArgb(YeniR, YeniG, YeniB));
+                }
+            }
+
+            return outputImage;
+        }
     }
 }

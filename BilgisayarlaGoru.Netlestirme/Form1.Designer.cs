@@ -168,7 +168,7 @@ namespace BilgisayarlaGoru.Netlestirme
             this.nmbr_2.Size = new System.Drawing.Size(120, 20);
             this.nmbr_2.TabIndex = 10;
             this.nmbr_2.Value = new decimal(new int[] {
-            1,
+            2,
             0,
             0,
             0});
@@ -190,7 +190,7 @@ namespace BilgisayarlaGoru.Netlestirme
             this.nmbr_1.Size = new System.Drawing.Size(120, 20);
             this.nmbr_1.TabIndex = 11;
             this.nmbr_1.Value = new decimal(new int[] {
-            1,
+            9,
             0,
             0,
             0});
