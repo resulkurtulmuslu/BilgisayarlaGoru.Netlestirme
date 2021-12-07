@@ -265,9 +265,9 @@ namespace BilgisayarlaGoru.Netlestirme
                     Color color_1 = image1.GetPixel(x, y);
                     Color color_2 = image2.GetPixel(x, y);
 
-                    int R = color_1.R + color_1.R;
-                    int G = color_1.G + color_1.G;
-                    int B = color_1.B + color_1.B;
+                    int R = color_1.R + color_2.R;
+                    int G = color_1.G + color_2.G;
+                    int B = color_1.B + color_2.B;
 
                     buffer[0, y, x] = R;
                     buffer[1, y, x] = G;
