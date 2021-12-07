@@ -62,6 +62,14 @@ namespace BilgisayarlaGoru.Netlestirme
 
         private void btn_Process_Click(object sender, EventArgs e)
         {
+            if (originalBitmap is null)
+            {
+                return;
+            }
+
+            toolStrip1.Enabled = false;
+            btn_Loading.Visible = true;
+
             switch (selectFilter)
             {
                 case Filter.Mean:
@@ -87,8 +95,16 @@ namespace BilgisayarlaGoru.Netlestirme
             sharpBitmap = BufferToImage(sharpNormalizationImageBuffer);
 
             picture_Sharp.Image = sharpBitmap;
+
+            toolStrip1.Enabled = true;
+            btn_Loading.Visible = false;
         }
 
+        /// <summary>
+        /// Bitmap olarak gönderilen resmi int[,,] tipinde döndürür
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns></returns>
         private int[,,] ReadPixel(Bitmap bitmap)
         {
             int[,,] buffer = new int[3, bitmap.Height, bitmap.Width];
@@ -108,6 +124,11 @@ namespace BilgisayarlaGoru.Netlestirme
             return buffer;
         }
 
+        /// <summary>
+        /// int[,,] tipinde olan resim değerlerini Bitmap tipinde döndürür
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <returns></returns>
         private Bitmap BufferToImage(int[,,] buffer)
         {
             var height = buffer.GetLength(1);
@@ -130,6 +151,11 @@ namespace BilgisayarlaGoru.Netlestirme
             return bitmap;
         }
 
+        /// <summary>
+        /// Bitmap tipindeki resime mean filteresi uygular
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns></returns>
         private Bitmap MeanFilter(Bitmap bitmap)
         {
             int value = Convert.ToInt16(cmb_FilterValue.SelectedItem);
@@ -166,6 +192,11 @@ namespace BilgisayarlaGoru.Netlestirme
             return outBitmap;
         }
 
+        /// <summary>
+        /// Bitmap tipindeki resime median filteresi uygular
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns></returns>
         private Bitmap MedianFilter(Bitmap bitmap)
         {
             int value = Convert.ToInt16(cmb_FilterValue.SelectedItem);
@@ -232,6 +263,11 @@ namespace BilgisayarlaGoru.Netlestirme
             return outBitmap;
         }
 
+        /// <summary>
+        /// Resim çıkarma işlemi
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns></returns>
         public int[,,] PictureExtraction(Bitmap image1, Bitmap image2)
         {
             int[,,] buffer = new int[3, image1.Height, image1.Width];
@@ -252,6 +288,11 @@ namespace BilgisayarlaGoru.Netlestirme
             return buffer;
         }
 
+        /// <summary>
+        /// Resim toplama işlemi
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns></returns>
         public int[,,] PictureAdd(Bitmap image1, Bitmap image2)
         {
             double scaling = Convert.ToDouble(txt_k.Text); //Keskin kenaları daha iyi görmek için değerini artırıyoruz.
@@ -278,6 +319,11 @@ namespace BilgisayarlaGoru.Netlestirme
             return buffer;
         }
 
+        /// <summary>
+        /// int[,,] tipindeki resim değerlerine normalizasyon uygular 
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns></returns>
         public int[,,] Normalization(int[,,] buffer)
         {
             //Pout = ( Pin - MinValue ) * ( ( 255 - 0 ) / ( MaxValue - MinValue ) ) + 0
@@ -311,6 +357,11 @@ namespace BilgisayarlaGoru.Netlestirme
             return outBuffer;
         }
 
+        /// <summary>
+        /// int[,,] tipindeki resim değerlerinin minimum değerini döner
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns></returns>
         public int BufferMin(int[,,] buffer)
         {
             bool first = true;
@@ -347,6 +398,11 @@ namespace BilgisayarlaGoru.Netlestirme
             return minValue;
         }
 
+        /// <summary>
+        /// int[,,] tipindeki resim değerlerinin maximum değerini döner
+        /// </summary>
+        /// <param name="bitmap"></param>
+        /// <returns></returns>
         public int BufferMax(int[,,] buffer)
         {
             bool first = true;
