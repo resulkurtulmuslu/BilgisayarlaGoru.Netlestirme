@@ -10,8 +10,16 @@ using System.Windows.Forms;
 
 namespace BilgisayarlaGoru.Netlestirme
 {
+    public enum Filter
+    {
+        Mean = 0,
+        Median = 1
+    }
+
     public partial class MainForm : Form
     {
+        Filter selectFilter = Filter.Mean;
+
         Bitmap originalBitmap;
         Bitmap smoothBitmap;
         Bitmap edgeBitmap;
@@ -31,7 +39,7 @@ namespace BilgisayarlaGoru.Netlestirme
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            cmb_MeanValue.SelectedIndex = 3;
+            cmb_FilterValue.SelectedIndex = 3;
         }
 
         private void btn_Select_Click(object sender, EventArgs e)
@@ -54,7 +62,16 @@ namespace BilgisayarlaGoru.Netlestirme
 
         private void btn_Process_Click(object sender, EventArgs e)
         {
-            smoothBitmap = MeanFilter(originalBitmap);
+            switch (selectFilter)
+            {
+                case Filter.Mean:
+                    smoothBitmap = MeanFilter(originalBitmap);
+                    break;
+                case Filter.Median:
+                    smoothBitmap = MedianFilter(originalBitmap);
+                    break;
+            }
+
             smoothImageBuffer = ReadPixel(smoothBitmap);
 
             picture_Smooth.Image = smoothBitmap;
@@ -115,7 +132,7 @@ namespace BilgisayarlaGoru.Netlestirme
 
         private Bitmap MeanFilter(Bitmap bitmap)
         {
-            int value = Convert.ToInt16(cmb_MeanValue.SelectedItem);
+            int value = Convert.ToInt16(cmb_FilterValue.SelectedItem);
             Bitmap outBitmap = new Bitmap(bitmap.Width, bitmap.Height);
 
             for (int x = (value - 1) / 2; x < bitmap.Width - (value - 1) / 2; x++)
@@ -143,6 +160,72 @@ namespace BilgisayarlaGoru.Netlestirme
                     Color avarageColor = Color.FromArgb(averageR, averageG, averageB);
 
                     outBitmap.SetPixel(x, y, avarageColor);
+                }
+            }
+
+            return outBitmap;
+        }
+
+        private Bitmap MedianFilter(Bitmap bitmap)
+        {
+            int value = Convert.ToInt16(cmb_FilterValue.SelectedItem);
+            Bitmap outBitmap = new Bitmap(bitmap.Width, bitmap.Height);
+
+            int numberOfElements = value * value;
+
+            int[] R = new int[numberOfElements];
+            int[] G = new int[numberOfElements];
+            int[] B = new int[numberOfElements];
+            int[] Gray = new int[numberOfElements];
+
+            int x, y, i, j;
+
+            for (x = (value - 1) / 2; x < bitmap.Width - (value - 1) / 2; x++)
+            {
+                for (y = (value - 1) / 2; y < bitmap.Height - (value - 1) / 2; y++)
+                {
+                    //Şablon bölgesi (çekirdek matris) içindeki pikselleri tarıyor.
+                    int k = 0;
+                    for (i = -((value - 1) / 2); i <= (value - 1) / 2; i++)
+                    {
+                        for (j = -((value - 1) / 2); j <= (value - 1) / 2; j++)
+                        {
+                            Color color = bitmap.GetPixel(x + i, y + j);
+                            R[k] = color.R;
+                            G[k] = color.G;
+                            B[k] = color.B;
+
+                            Gray[k] = Convert.ToInt16(R[k] * 0.299 + G[k] * 0.587 + B[k] * 0.114); //Gri ton formülü
+                            k++;
+                        }
+                    }
+
+                    //Gri tona göre sıralama yapıyor. Aynı anda üç rengide değiştiriyor.
+                    int temp = 0;
+
+                    for (i = 0; i < numberOfElements; i++)
+                    {
+                        for (j = i + 1; j < numberOfElements; j++)
+                        {
+                            if (Gray[j] < Gray[i])
+                            {
+                                temp = Gray[i];
+                                Gray[i] = Gray[j];
+                                Gray[j] = temp;
+                                temp = R[i];
+                                R[i] = R[j];
+                                R[j] = temp;
+                                temp = G[i];
+                                G[i] = G[j];
+                                G[j] = temp;
+                                temp = B[i];
+                                B[i] = B[j];
+                                B[j] = temp;
+                            }
+                        }
+                    }
+
+                    outBitmap.SetPixel(x, y, Color.FromArgb(R[(numberOfElements - 1) / 2], G[(numberOfElements - 1) / 2], B[(numberOfElements - 1) / 2]));
                 }
             }
 
@@ -309,6 +392,37 @@ namespace BilgisayarlaGoru.Netlestirme
             }
 
             base.OnKeyPress(e);
+        }
+
+        private void btn_Filter_Click(object sender, EventArgs e)
+        {
+            switch (selectFilter)
+            {
+                case Filter.Mean:
+                    btn_MeanFilter.Checked = true;
+                    btn_MedianFilter.Checked = false;
+                    break;
+                case Filter.Median:
+                    btn_MeanFilter.Checked = false;
+                    btn_MedianFilter.Checked = true;
+                    break;
+            }
+        }
+
+        private void btn_MeanFilter_Click(object sender, EventArgs e)
+        {
+            selectFilter = Filter.Mean;
+
+            btn_MeanFilter.Checked = true;
+            btn_MedianFilter.Checked = false;
+        }
+
+        private void btn_MedianFilter_Click(object sender, EventArgs e)
+        {
+            selectFilter = Filter.Median;
+
+            btn_MeanFilter.Checked = false;
+            btn_MedianFilter.Checked = true;
         }
     }
 }

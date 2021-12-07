@@ -33,7 +33,7 @@ namespace BilgisayarlaGoru.Netlestirme
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btn_Select = new System.Windows.Forms.ToolStripButton();
             this.btn_Process = new System.Windows.Forms.ToolStripButton();
-            this.cmb_MeanValue = new System.Windows.Forms.ToolStripComboBox();
+            this.cmb_FilterValue = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label4 = new System.Windows.Forms.Label();
@@ -46,6 +46,9 @@ namespace BilgisayarlaGoru.Netlestirme
             this.label1 = new System.Windows.Forms.Label();
             this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
             this.txt_k = new System.Windows.Forms.ToolStripTextBox();
+            this.btn_Filter = new System.Windows.Forms.ToolStripDropDownButton();
+            this.btn_MeanFilter = new System.Windows.Forms.ToolStripMenuItem();
+            this.btn_MedianFilter = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picture_Smooth)).BeginInit();
@@ -61,8 +64,9 @@ namespace BilgisayarlaGoru.Netlestirme
             this.btn_Process,
             this.txt_k,
             this.toolStripLabel1,
-            this.cmb_MeanValue,
-            this.toolStripLabel2});
+            this.cmb_FilterValue,
+            this.toolStripLabel2,
+            this.btn_Filter});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(800, 25);
@@ -87,18 +91,18 @@ namespace BilgisayarlaGoru.Netlestirme
             this.btn_Process.Text = "Netleştir";
             this.btn_Process.Click += new System.EventHandler(this.btn_Process_Click);
             // 
-            // cmb_MeanValue
+            // cmb_FilterValue
             // 
-            this.cmb_MeanValue.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.cmb_MeanValue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmb_MeanValue.FlatStyle = System.Windows.Forms.FlatStyle.Standard;
-            this.cmb_MeanValue.Items.AddRange(new object[] {
+            this.cmb_FilterValue.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.cmb_FilterValue.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmb_FilterValue.FlatStyle = System.Windows.Forms.FlatStyle.Standard;
+            this.cmb_FilterValue.Items.AddRange(new object[] {
             "3",
             "5",
             "7",
             "9"});
-            this.cmb_MeanValue.Name = "cmb_MeanValue";
-            this.cmb_MeanValue.Size = new System.Drawing.Size(121, 25);
+            this.cmb_FilterValue.Name = "cmb_FilterValue";
+            this.cmb_FilterValue.Size = new System.Drawing.Size(121, 25);
             // 
             // toolStripLabel1
             // 
@@ -161,7 +165,7 @@ namespace BilgisayarlaGoru.Netlestirme
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(394, 20);
             this.label2.TabIndex = 5;
-            this.label2.Text = "Bulanık Görüntü";
+            this.label2.Text = "Yumuşatılmış Görüntü";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // picture_Smooth
@@ -223,8 +227,8 @@ namespace BilgisayarlaGoru.Netlestirme
             // 
             this.toolStripLabel2.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
             this.toolStripLabel2.Name = "toolStripLabel2";
-            this.toolStripLabel2.Size = new System.Drawing.Size(146, 22);
-            this.toolStripLabel2.Text = "Mean Filtre Şablon Boyutu";
+            this.toolStripLabel2.Size = new System.Drawing.Size(113, 22);
+            this.toolStripLabel2.Text = "Filtre Şablon Boyutu";
             // 
             // txt_k
             // 
@@ -235,6 +239,32 @@ namespace BilgisayarlaGoru.Netlestirme
             this.txt_k.Size = new System.Drawing.Size(100, 25);
             this.txt_k.Text = "0,2";
             this.txt_k.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.OnKeyPress);
+            // 
+            // btn_Filter
+            // 
+            this.btn_Filter.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btn_MeanFilter,
+            this.btn_MedianFilter});
+            this.btn_Filter.Image = ((System.Drawing.Image)(resources.GetObject("btn_Filter.Image")));
+            this.btn_Filter.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btn_Filter.Name = "btn_Filter";
+            this.btn_Filter.Size = new System.Drawing.Size(137, 22);
+            this.btn_Filter.Text = "Yumuşatma Filtresi";
+            this.btn_Filter.Click += new System.EventHandler(this.btn_Filter_Click);
+            // 
+            // btn_MeanFilter
+            // 
+            this.btn_MeanFilter.Name = "btn_MeanFilter";
+            this.btn_MeanFilter.Size = new System.Drawing.Size(180, 22);
+            this.btn_MeanFilter.Text = "Mean Filtre";
+            this.btn_MeanFilter.Click += new System.EventHandler(this.btn_MeanFilter_Click);
+            // 
+            // btn_MedianFilter
+            // 
+            this.btn_MedianFilter.Name = "btn_MedianFilter";
+            this.btn_MedianFilter.Size = new System.Drawing.Size(180, 22);
+            this.btn_MedianFilter.Text = "Median Filtre";
+            this.btn_MedianFilter.Click += new System.EventHandler(this.btn_MedianFilter_Click);
             // 
             // MainForm
             // 
@@ -275,9 +305,12 @@ namespace BilgisayarlaGoru.Netlestirme
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripButton btn_Select;
         private System.Windows.Forms.ToolStripButton btn_Process;
-        private System.Windows.Forms.ToolStripComboBox cmb_MeanValue;
+        private System.Windows.Forms.ToolStripComboBox cmb_FilterValue;
         private System.Windows.Forms.ToolStripLabel toolStripLabel1;
         private System.Windows.Forms.ToolStripLabel toolStripLabel2;
         private System.Windows.Forms.ToolStripTextBox txt_k;
+        private System.Windows.Forms.ToolStripDropDownButton btn_Filter;
+        private System.Windows.Forms.ToolStripMenuItem btn_MeanFilter;
+        private System.Windows.Forms.ToolStripMenuItem btn_MedianFilter;
     }
 }
