@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,10 +34,10 @@ namespace BilgisayarlaGoru.Netlestirme
         NormalizationType normalizationType = NormalizationType.Multiple;
         ImageColor imageColor = ImageColor.RGB;
 
-        Bitmap originalBitmap;
-        Bitmap smoothBitmap;
-        Bitmap edgeBitmap;
-        Bitmap sharpBitmap;
+        Bitmap originalBitmap = null;
+        Bitmap smoothBitmap = null;
+        Bitmap edgeBitmap = null;
+        Bitmap sharpBitmap = null;
 
         int[,,] originalImageBuffer;
         int[,,] smoothImageBuffer;
@@ -77,6 +78,7 @@ namespace BilgisayarlaGoru.Netlestirme
         {
             if (originalBitmap is null)
             {
+                MessageBox.Show("İşlenecek öğe bulunamadı !", "Görüntü Netleştirme", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -187,6 +189,22 @@ namespace BilgisayarlaGoru.Netlestirme
 
             toolStrip1.Enabled = true;
             btn_Loading.Visible = false;
+        }
+
+        private void btn_Export_Click(object sender, EventArgs e)
+        {
+            if (sharpBitmap is null)
+            {
+                MessageBox.Show("Çıktı alınacak öğe bulunamadı !", "Görüntü Netleştirme", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            SaveFileDialog dialog = new SaveFileDialog();
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                sharpBitmap.Save($"{dialog.FileName}.jpeg", ImageFormat.Jpeg);
+            }
         }
 
         /// <summary>

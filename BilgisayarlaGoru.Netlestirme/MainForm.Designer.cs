@@ -39,6 +39,12 @@ namespace BilgisayarlaGoru.Netlestirme
             this.btn_Filter = new System.Windows.Forms.ToolStripDropDownButton();
             this.btn_MeanFilter = new System.Windows.Forms.ToolStripMenuItem();
             this.btn_MedianFilter = new System.Windows.Forms.ToolStripMenuItem();
+            this.btn_Normalization = new System.Windows.Forms.ToolStripDropDownButton();
+            this.btn_Normalization_Multiple = new System.Windows.Forms.ToolStripMenuItem();
+            this.btn_Normalization_Single = new System.Windows.Forms.ToolStripMenuItem();
+            this.btn_Image_Color = new System.Windows.Forms.ToolStripDropDownButton();
+            this.btn_Image_Color_RGB = new System.Windows.Forms.ToolStripMenuItem();
+            this.btn_Image_Color_Gray = new System.Windows.Forms.ToolStripMenuItem();
             this.btn_Process = new System.Windows.Forms.ToolStripButton();
             this.btn_Loading = new System.Windows.Forms.ToolStripButton();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -50,12 +56,7 @@ namespace BilgisayarlaGoru.Netlestirme
             this.picture_Edge = new System.Windows.Forms.PictureBox();
             this.picture_Sharp = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.btn_Normalization = new System.Windows.Forms.ToolStripDropDownButton();
-            this.btn_Normalization_Multiple = new System.Windows.Forms.ToolStripMenuItem();
-            this.btn_Normalization_Single = new System.Windows.Forms.ToolStripMenuItem();
-            this.btn_Image_Color = new System.Windows.Forms.ToolStripDropDownButton();
-            this.btn_Image_Color_RGB = new System.Windows.Forms.ToolStripMenuItem();
-            this.btn_Image_Color_Gray = new System.Windows.Forms.ToolStripMenuItem();
+            this.btn_Export = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picture_Smooth)).BeginInit();
@@ -76,10 +77,11 @@ namespace BilgisayarlaGoru.Netlestirme
             this.btn_Normalization,
             this.btn_Image_Color,
             this.btn_Process,
+            this.btn_Export,
             this.btn_Loading});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1116, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(1165, 25);
             this.toolStrip1.TabIndex = 0;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -144,16 +146,68 @@ namespace BilgisayarlaGoru.Netlestirme
             // btn_MeanFilter
             // 
             this.btn_MeanFilter.Name = "btn_MeanFilter";
-            this.btn_MeanFilter.Size = new System.Drawing.Size(180, 22);
+            this.btn_MeanFilter.Size = new System.Drawing.Size(143, 22);
             this.btn_MeanFilter.Text = "Mean Filtre";
             this.btn_MeanFilter.Click += new System.EventHandler(this.btn_MeanFilter_Click);
             // 
             // btn_MedianFilter
             // 
             this.btn_MedianFilter.Name = "btn_MedianFilter";
-            this.btn_MedianFilter.Size = new System.Drawing.Size(180, 22);
+            this.btn_MedianFilter.Size = new System.Drawing.Size(143, 22);
             this.btn_MedianFilter.Text = "Median Filtre";
             this.btn_MedianFilter.Click += new System.EventHandler(this.btn_MedianFilter_Click);
+            // 
+            // btn_Normalization
+            // 
+            this.btn_Normalization.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btn_Normalization_Multiple,
+            this.btn_Normalization_Single});
+            this.btn_Normalization.Image = ((System.Drawing.Image)(resources.GetObject("btn_Normalization.Image")));
+            this.btn_Normalization.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btn_Normalization.Name = "btn_Normalization";
+            this.btn_Normalization.Size = new System.Drawing.Size(137, 22);
+            this.btn_Normalization.Text = "Normalizasyon Tipi";
+            this.btn_Normalization.Click += new System.EventHandler(this.btn_Normalization_Click);
+            // 
+            // btn_Normalization_Multiple
+            // 
+            this.btn_Normalization_Multiple.Name = "btn_Normalization_Multiple";
+            this.btn_Normalization_Multiple.Size = new System.Drawing.Size(105, 22);
+            this.btn_Normalization_Multiple.Text = "Çoklu";
+            this.btn_Normalization_Multiple.Click += new System.EventHandler(this.btn_Normalization_Multiple_Click);
+            // 
+            // btn_Normalization_Single
+            // 
+            this.btn_Normalization_Single.Name = "btn_Normalization_Single";
+            this.btn_Normalization_Single.Size = new System.Drawing.Size(105, 22);
+            this.btn_Normalization_Single.Text = "Tekli";
+            this.btn_Normalization_Single.Click += new System.EventHandler(this.btn_Normalization_Single_Click);
+            // 
+            // btn_Image_Color
+            // 
+            this.btn_Image_Color.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btn_Image_Color_RGB,
+            this.btn_Image_Color_Gray});
+            this.btn_Image_Color.Image = ((System.Drawing.Image)(resources.GetObject("btn_Image_Color.Image")));
+            this.btn_Image_Color.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btn_Image_Color.Name = "btn_Image_Color";
+            this.btn_Image_Color.Size = new System.Drawing.Size(100, 22);
+            this.btn_Image_Color.Text = "Renk Seçimi";
+            this.btn_Image_Color.Click += new System.EventHandler(this.btn_Image_Color_Click);
+            // 
+            // btn_Image_Color_RGB
+            // 
+            this.btn_Image_Color_RGB.Name = "btn_Image_Color_RGB";
+            this.btn_Image_Color_RGB.Size = new System.Drawing.Size(96, 22);
+            this.btn_Image_Color_RGB.Text = "RGB";
+            this.btn_Image_Color_RGB.Click += new System.EventHandler(this.btn_Image_Color_RGB_Click);
+            // 
+            // btn_Image_Color_Gray
+            // 
+            this.btn_Image_Color_Gray.Name = "btn_Image_Color_Gray";
+            this.btn_Image_Color_Gray.Size = new System.Drawing.Size(96, 22);
+            this.btn_Image_Color_Gray.Text = "Gri";
+            this.btn_Image_Color_Gray.Click += new System.EventHandler(this.btn_Image_Color_Gray_Click);
             // 
             // btn_Process
             // 
@@ -195,16 +249,16 @@ namespace BilgisayarlaGoru.Netlestirme
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1116, 687);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1165, 687);
             this.tableLayoutPanel1.TabIndex = 1;
             // 
             // label4
             // 
             this.label4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.label4.Location = new System.Drawing.Point(561, 666);
+            this.label4.Location = new System.Drawing.Point(585, 666);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(552, 21);
+            this.label4.Size = new System.Drawing.Size(577, 21);
             this.label4.TabIndex = 7;
             this.label4.Text = "Netleştirilmiş Görüntü";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -215,7 +269,7 @@ namespace BilgisayarlaGoru.Netlestirme
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.label3.Location = new System.Drawing.Point(3, 666);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(552, 21);
+            this.label3.Size = new System.Drawing.Size(576, 21);
             this.label3.TabIndex = 6;
             this.label3.Text = "Kenar Görüntüsü";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -224,9 +278,9 @@ namespace BilgisayarlaGoru.Netlestirme
             // 
             this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
-            this.label2.Location = new System.Drawing.Point(561, 323);
+            this.label2.Location = new System.Drawing.Point(585, 323);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(552, 20);
+            this.label2.Size = new System.Drawing.Size(577, 20);
             this.label2.TabIndex = 5;
             this.label2.Text = "Yumuşatılmış Görüntü";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -235,9 +289,9 @@ namespace BilgisayarlaGoru.Netlestirme
             // 
             this.picture_Smooth.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.picture_Smooth.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.picture_Smooth.Location = new System.Drawing.Point(561, 3);
+            this.picture_Smooth.Location = new System.Drawing.Point(585, 3);
             this.picture_Smooth.Name = "picture_Smooth";
-            this.picture_Smooth.Size = new System.Drawing.Size(552, 317);
+            this.picture_Smooth.Size = new System.Drawing.Size(577, 317);
             this.picture_Smooth.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picture_Smooth.TabIndex = 1;
             this.picture_Smooth.TabStop = false;
@@ -248,7 +302,7 @@ namespace BilgisayarlaGoru.Netlestirme
             this.picture_Original.Dock = System.Windows.Forms.DockStyle.Fill;
             this.picture_Original.Location = new System.Drawing.Point(3, 3);
             this.picture_Original.Name = "picture_Original";
-            this.picture_Original.Size = new System.Drawing.Size(552, 317);
+            this.picture_Original.Size = new System.Drawing.Size(576, 317);
             this.picture_Original.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picture_Original.TabIndex = 0;
             this.picture_Original.TabStop = false;
@@ -259,7 +313,7 @@ namespace BilgisayarlaGoru.Netlestirme
             this.picture_Edge.Dock = System.Windows.Forms.DockStyle.Fill;
             this.picture_Edge.Location = new System.Drawing.Point(3, 346);
             this.picture_Edge.Name = "picture_Edge";
-            this.picture_Edge.Size = new System.Drawing.Size(552, 317);
+            this.picture_Edge.Size = new System.Drawing.Size(576, 317);
             this.picture_Edge.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picture_Edge.TabIndex = 2;
             this.picture_Edge.TabStop = false;
@@ -268,9 +322,9 @@ namespace BilgisayarlaGoru.Netlestirme
             // 
             this.picture_Sharp.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.picture_Sharp.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.picture_Sharp.Location = new System.Drawing.Point(561, 346);
+            this.picture_Sharp.Location = new System.Drawing.Point(585, 346);
             this.picture_Sharp.Name = "picture_Sharp";
-            this.picture_Sharp.Size = new System.Drawing.Size(552, 317);
+            this.picture_Sharp.Size = new System.Drawing.Size(577, 317);
             this.picture_Sharp.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picture_Sharp.TabIndex = 3;
             this.picture_Sharp.TabStop = false;
@@ -281,74 +335,31 @@ namespace BilgisayarlaGoru.Netlestirme
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.label1.Location = new System.Drawing.Point(3, 323);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(552, 20);
+            this.label1.Size = new System.Drawing.Size(576, 20);
             this.label1.TabIndex = 4;
             this.label1.Text = "Orijinal Görüntü";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // btn_Normalization
+            // btn_Export
             // 
-            this.btn_Normalization.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.btn_Normalization_Multiple,
-            this.btn_Normalization_Single});
-            this.btn_Normalization.Image = ((System.Drawing.Image)(resources.GetObject("btn_Normalization.Image")));
-            this.btn_Normalization.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btn_Normalization.Name = "btn_Normalization";
-            this.btn_Normalization.Size = new System.Drawing.Size(137, 22);
-            this.btn_Normalization.Text = "Normalizasyon Tipi";
-            this.btn_Normalization.Click += new System.EventHandler(this.btn_Normalization_Click);
-            // 
-            // btn_Normalization_Multiple
-            // 
-            this.btn_Normalization_Multiple.Name = "btn_Normalization_Multiple";
-            this.btn_Normalization_Multiple.Size = new System.Drawing.Size(180, 22);
-            this.btn_Normalization_Multiple.Text = "Çoklu";
-            this.btn_Normalization_Multiple.Click += new System.EventHandler(this.btn_Normalization_Multiple_Click);
-            // 
-            // btn_Normalization_Single
-            // 
-            this.btn_Normalization_Single.Name = "btn_Normalization_Single";
-            this.btn_Normalization_Single.Size = new System.Drawing.Size(180, 22);
-            this.btn_Normalization_Single.Text = "Tekli";
-            this.btn_Normalization_Single.Click += new System.EventHandler(this.btn_Normalization_Single_Click);
-            // 
-            // btn_Image_Color
-            // 
-            this.btn_Image_Color.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.btn_Image_Color_RGB,
-            this.btn_Image_Color_Gray});
-            this.btn_Image_Color.Image = ((System.Drawing.Image)(resources.GetObject("btn_Image_Color.Image")));
-            this.btn_Image_Color.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btn_Image_Color.Name = "btn_Image_Color";
-            this.btn_Image_Color.Size = new System.Drawing.Size(100, 22);
-            this.btn_Image_Color.Text = "Renk Seçimi";
-            this.btn_Image_Color.Click += new System.EventHandler(this.btn_Image_Color_Click);
-            // 
-            // btn_Image_Color_RGB
-            // 
-            this.btn_Image_Color_RGB.Name = "btn_Image_Color_RGB";
-            this.btn_Image_Color_RGB.Size = new System.Drawing.Size(180, 22);
-            this.btn_Image_Color_RGB.Text = "RGB";
-            this.btn_Image_Color_RGB.Click += new System.EventHandler(this.btn_Image_Color_RGB_Click);
-            // 
-            // btn_Image_Color_Gray
-            // 
-            this.btn_Image_Color_Gray.Name = "btn_Image_Color_Gray";
-            this.btn_Image_Color_Gray.Size = new System.Drawing.Size(180, 22);
-            this.btn_Image_Color_Gray.Text = "Gri";
-            this.btn_Image_Color_Gray.Click += new System.EventHandler(this.btn_Image_Color_Gray_Click);
+            this.btn_Export.Image = ((System.Drawing.Image)(resources.GetObject("btn_Export.Image")));
+            this.btn_Export.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btn_Export.Name = "btn_Export";
+            this.btn_Export.Size = new System.Drawing.Size(65, 22);
+            this.btn_Export.Text = "Çıktı Al";
+            this.btn_Export.Click += new System.EventHandler(this.btn_Export_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1116, 712);
+            this.ClientSize = new System.Drawing.Size(1165, 712);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.toolStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Görüntü Netleştirme";
+            this.Text = "Çıktı Al";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.toolStrip1.ResumeLayout(false);
@@ -391,5 +402,6 @@ namespace BilgisayarlaGoru.Netlestirme
         private System.Windows.Forms.ToolStripDropDownButton btn_Image_Color;
         private System.Windows.Forms.ToolStripMenuItem btn_Image_Color_RGB;
         private System.Windows.Forms.ToolStripMenuItem btn_Image_Color_Gray;
+        private System.Windows.Forms.ToolStripButton btn_Export;
     }
 }
