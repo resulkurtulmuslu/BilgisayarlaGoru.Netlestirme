@@ -32,7 +32,6 @@ namespace BilgisayarlaGoru.Netlestirme
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.btn_Select = new System.Windows.Forms.ToolStripButton();
-            this.btn_Process = new System.Windows.Forms.ToolStripButton();
             this.txt_k = new System.Windows.Forms.ToolStripTextBox();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.cmb_FilterValue = new System.Windows.Forms.ToolStripComboBox();
@@ -40,6 +39,8 @@ namespace BilgisayarlaGoru.Netlestirme
             this.btn_Filter = new System.Windows.Forms.ToolStripDropDownButton();
             this.btn_MeanFilter = new System.Windows.Forms.ToolStripMenuItem();
             this.btn_MedianFilter = new System.Windows.Forms.ToolStripMenuItem();
+            this.btn_Process = new System.Windows.Forms.ToolStripButton();
+            this.btn_Loading = new System.Windows.Forms.ToolStripButton();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -49,7 +50,12 @@ namespace BilgisayarlaGoru.Netlestirme
             this.picture_Edge = new System.Windows.Forms.PictureBox();
             this.picture_Sharp = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.btn_Loading = new System.Windows.Forms.ToolStripButton();
+            this.btn_Normalization = new System.Windows.Forms.ToolStripDropDownButton();
+            this.btn_Normalization_Multiple = new System.Windows.Forms.ToolStripMenuItem();
+            this.btn_Normalization_Single = new System.Windows.Forms.ToolStripMenuItem();
+            this.btn_Image_Color = new System.Windows.Forms.ToolStripDropDownButton();
+            this.btn_Image_Color_RGB = new System.Windows.Forms.ToolStripMenuItem();
+            this.btn_Image_Color_Gray = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picture_Smooth)).BeginInit();
@@ -67,6 +73,8 @@ namespace BilgisayarlaGoru.Netlestirme
             this.cmb_FilterValue,
             this.toolStripLabel2,
             this.btn_Filter,
+            this.btn_Normalization,
+            this.btn_Image_Color,
             this.btn_Process,
             this.btn_Loading});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
@@ -83,15 +91,6 @@ namespace BilgisayarlaGoru.Netlestirme
             this.btn_Select.Size = new System.Drawing.Size(80, 22);
             this.btn_Select.Text = "Resim Seç";
             this.btn_Select.Click += new System.EventHandler(this.btn_Select_Click);
-            // 
-            // btn_Process
-            // 
-            this.btn_Process.Image = ((System.Drawing.Image)(resources.GetObject("btn_Process.Image")));
-            this.btn_Process.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btn_Process.Name = "btn_Process";
-            this.btn_Process.Size = new System.Drawing.Size(71, 22);
-            this.btn_Process.Text = "Netleştir";
-            this.btn_Process.Click += new System.EventHandler(this.btn_Process_Click);
             // 
             // txt_k
             // 
@@ -155,6 +154,25 @@ namespace BilgisayarlaGoru.Netlestirme
             this.btn_MedianFilter.Size = new System.Drawing.Size(180, 22);
             this.btn_MedianFilter.Text = "Median Filtre";
             this.btn_MedianFilter.Click += new System.EventHandler(this.btn_MedianFilter_Click);
+            // 
+            // btn_Process
+            // 
+            this.btn_Process.Image = ((System.Drawing.Image)(resources.GetObject("btn_Process.Image")));
+            this.btn_Process.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btn_Process.Name = "btn_Process";
+            this.btn_Process.Size = new System.Drawing.Size(71, 22);
+            this.btn_Process.Text = "Netleştir";
+            this.btn_Process.Click += new System.EventHandler(this.btn_Process_Click);
+            // 
+            // btn_Loading
+            // 
+            this.btn_Loading.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btn_Loading.Image = ((System.Drawing.Image)(resources.GetObject("btn_Loading.Image")));
+            this.btn_Loading.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btn_Loading.Name = "btn_Loading";
+            this.btn_Loading.Size = new System.Drawing.Size(23, 22);
+            this.btn_Loading.Text = "toolStripButton1";
+            this.btn_Loading.Visible = false;
             // 
             // tableLayoutPanel1
             // 
@@ -268,15 +286,57 @@ namespace BilgisayarlaGoru.Netlestirme
             this.label1.Text = "Orijinal Görüntü";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // btn_Loading
+            // btn_Normalization
             // 
-            this.btn_Loading.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btn_Loading.Image = ((System.Drawing.Image)(resources.GetObject("btn_Loading.Image")));
-            this.btn_Loading.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btn_Loading.Name = "btn_Loading";
-            this.btn_Loading.Size = new System.Drawing.Size(23, 22);
-            this.btn_Loading.Text = "toolStripButton1";
-            this.btn_Loading.Visible = false;
+            this.btn_Normalization.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btn_Normalization_Multiple,
+            this.btn_Normalization_Single});
+            this.btn_Normalization.Image = ((System.Drawing.Image)(resources.GetObject("btn_Normalization.Image")));
+            this.btn_Normalization.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btn_Normalization.Name = "btn_Normalization";
+            this.btn_Normalization.Size = new System.Drawing.Size(137, 22);
+            this.btn_Normalization.Text = "Normalizasyon Tipi";
+            this.btn_Normalization.Click += new System.EventHandler(this.btn_Normalization_Click);
+            // 
+            // btn_Normalization_Multiple
+            // 
+            this.btn_Normalization_Multiple.Name = "btn_Normalization_Multiple";
+            this.btn_Normalization_Multiple.Size = new System.Drawing.Size(180, 22);
+            this.btn_Normalization_Multiple.Text = "Çoklu";
+            this.btn_Normalization_Multiple.Click += new System.EventHandler(this.btn_Normalization_Multiple_Click);
+            // 
+            // btn_Normalization_Single
+            // 
+            this.btn_Normalization_Single.Name = "btn_Normalization_Single";
+            this.btn_Normalization_Single.Size = new System.Drawing.Size(180, 22);
+            this.btn_Normalization_Single.Text = "Tekli";
+            this.btn_Normalization_Single.Click += new System.EventHandler(this.btn_Normalization_Single_Click);
+            // 
+            // btn_Image_Color
+            // 
+            this.btn_Image_Color.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.btn_Image_Color_RGB,
+            this.btn_Image_Color_Gray});
+            this.btn_Image_Color.Image = ((System.Drawing.Image)(resources.GetObject("btn_Image_Color.Image")));
+            this.btn_Image_Color.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btn_Image_Color.Name = "btn_Image_Color";
+            this.btn_Image_Color.Size = new System.Drawing.Size(100, 22);
+            this.btn_Image_Color.Text = "Renk Seçimi";
+            this.btn_Image_Color.Click += new System.EventHandler(this.btn_Image_Color_Click);
+            // 
+            // btn_Image_Color_RGB
+            // 
+            this.btn_Image_Color_RGB.Name = "btn_Image_Color_RGB";
+            this.btn_Image_Color_RGB.Size = new System.Drawing.Size(180, 22);
+            this.btn_Image_Color_RGB.Text = "RGB";
+            this.btn_Image_Color_RGB.Click += new System.EventHandler(this.btn_Image_Color_RGB_Click);
+            // 
+            // btn_Image_Color_Gray
+            // 
+            this.btn_Image_Color_Gray.Name = "btn_Image_Color_Gray";
+            this.btn_Image_Color_Gray.Size = new System.Drawing.Size(180, 22);
+            this.btn_Image_Color_Gray.Text = "Gri";
+            this.btn_Image_Color_Gray.Click += new System.EventHandler(this.btn_Image_Color_Gray_Click);
             // 
             // MainForm
             // 
@@ -325,5 +385,11 @@ namespace BilgisayarlaGoru.Netlestirme
         private System.Windows.Forms.ToolStripMenuItem btn_MeanFilter;
         private System.Windows.Forms.ToolStripMenuItem btn_MedianFilter;
         private System.Windows.Forms.ToolStripButton btn_Loading;
+        private System.Windows.Forms.ToolStripDropDownButton btn_Normalization;
+        private System.Windows.Forms.ToolStripMenuItem btn_Normalization_Multiple;
+        private System.Windows.Forms.ToolStripMenuItem btn_Normalization_Single;
+        private System.Windows.Forms.ToolStripDropDownButton btn_Image_Color;
+        private System.Windows.Forms.ToolStripMenuItem btn_Image_Color_RGB;
+        private System.Windows.Forms.ToolStripMenuItem btn_Image_Color_Gray;
     }
 }

@@ -16,9 +16,22 @@ namespace BilgisayarlaGoru.Netlestirme
         Median = 1
     }
 
+    public enum NormalizationType
+    {
+        Single = 0,
+        Multiple = 1
+    }
+    public enum ImageColor
+    {
+        RGB = 0,
+        Gray = 1
+    }
+
     public partial class MainForm : Form
     {
         Filter selectFilter = Filter.Mean;
+        NormalizationType normalizationType = NormalizationType.Multiple;
+        ImageColor imageColor = ImageColor.RGB;
 
         Bitmap originalBitmap;
         Bitmap smoothBitmap;
@@ -70,31 +83,107 @@ namespace BilgisayarlaGoru.Netlestirme
             toolStrip1.Enabled = false;
             btn_Loading.Visible = true;
 
-            switch (selectFilter)
+            switch (imageColor)
             {
-                case Filter.Mean:
-                    smoothBitmap = MeanFilter(originalBitmap);
+                case ImageColor.RGB:
+                    switch (selectFilter)
+                    {
+                        case Filter.Mean:
+                            smoothBitmap = MeanFilter(originalBitmap);
+                            break;
+                        case Filter.Median:
+                            smoothBitmap = MedianFilter(originalBitmap);
+                            break;
+                    }
+
+                    smoothImageBuffer = ReadPixel(smoothBitmap);
+
+                    picture_Smooth.Image = smoothBitmap;
+
+                    edgeImageBuffer = PictureExtraction(originalBitmap, smoothBitmap);
+
+                    switch (normalizationType)
+                    {
+                        case NormalizationType.Single:
+                            edgeNormalizationImageBuffer = SingleNormalization(edgeImageBuffer);
+                            break;
+                        case NormalizationType.Multiple:
+                            edgeNormalizationImageBuffer = Normalization(edgeImageBuffer);
+                            break;
+                    }
+
+                    edgeBitmap = BufferToImage(edgeNormalizationImageBuffer);
+
+                    picture_Edge.Image = edgeBitmap;
+
+                    sharpImageBuffer = PictureAdd(originalBitmap, edgeBitmap);
+
+                    switch (normalizationType)
+                    {
+                        case NormalizationType.Single:
+                            sharpNormalizationImageBuffer = SingleNormalization(sharpImageBuffer);
+                            break;
+                        case NormalizationType.Multiple:
+                            sharpNormalizationImageBuffer = Normalization(sharpImageBuffer);
+                            break;
+                    }
+
+                    sharpBitmap = BufferToImage(sharpNormalizationImageBuffer);
+
+                    picture_Sharp.Image = sharpBitmap;
                     break;
-                case Filter.Median:
-                    smoothBitmap = MedianFilter(originalBitmap);
+                case ImageColor.Gray:
+                    Bitmap grayBitmap = RgbImageToGrayImage(originalBitmap);
+                    ShowForm showForm = new ShowForm(grayBitmap);
+                    showForm.Show();
+
+                    switch (selectFilter)
+                    {
+                        case Filter.Mean:
+                            smoothBitmap = MeanFilter(grayBitmap);
+                            break;
+                        case Filter.Median:
+                            smoothBitmap = MedianFilter(grayBitmap);
+                            break;
+                    }
+
+                    smoothImageBuffer = ReadPixel(smoothBitmap);
+
+                    picture_Smooth.Image = smoothBitmap;
+
+                    edgeImageBuffer = PictureExtraction(grayBitmap, smoothBitmap);
+
+                    switch (normalizationType)
+                    {
+                        case NormalizationType.Single:
+                            edgeNormalizationImageBuffer = SingleNormalization(edgeImageBuffer);
+                            break;
+                        case NormalizationType.Multiple:
+                            edgeNormalizationImageBuffer = Normalization(edgeImageBuffer);
+                            break;
+                    }
+
+                    edgeBitmap = BufferToImage(edgeNormalizationImageBuffer);
+
+                    picture_Edge.Image = edgeBitmap;
+
+                    sharpImageBuffer = PictureAdd(grayBitmap, edgeBitmap);
+
+                    switch (normalizationType)
+                    {
+                        case NormalizationType.Single:
+                            sharpNormalizationImageBuffer = SingleNormalization(sharpImageBuffer);
+                            break;
+                        case NormalizationType.Multiple:
+                            sharpNormalizationImageBuffer = Normalization(sharpImageBuffer);
+                            break;
+                    }
+
+                    sharpBitmap = BufferToImage(sharpNormalizationImageBuffer);
+
+                    picture_Sharp.Image = sharpBitmap;
                     break;
             }
-
-            smoothImageBuffer = ReadPixel(smoothBitmap);
-
-            picture_Smooth.Image = smoothBitmap;
-
-            edgeImageBuffer = PictureExtraction(originalBitmap, smoothBitmap);
-            edgeNormalizationImageBuffer = Normalization(edgeImageBuffer);
-            edgeBitmap = BufferToImage(edgeNormalizationImageBuffer);
-
-            picture_Edge.Image = edgeBitmap;
-
-            sharpImageBuffer = PictureAdd(originalBitmap, edgeBitmap);
-            sharpNormalizationImageBuffer = Normalization(sharpImageBuffer);
-            sharpBitmap = BufferToImage(sharpNormalizationImageBuffer);
-
-            picture_Sharp.Image = sharpBitmap;
 
             toolStrip1.Enabled = true;
             btn_Loading.Visible = false;
@@ -122,6 +211,25 @@ namespace BilgisayarlaGoru.Netlestirme
             }
 
             return buffer;
+        }
+
+        private Bitmap RgbImageToGrayImage(Bitmap bitmap)
+        {
+            Bitmap outBitmap = new Bitmap(bitmap.Width, bitmap.Height);
+
+            for (int x = 0; x < bitmap.Width; x++)
+            {
+                for (int y = 0; y < bitmap.Height; y++)
+                {
+                    Color color = bitmap.GetPixel(x, y);
+
+                    int gray = Convert.ToInt16(color.R * 0.299 + color.G * 0.587 + color.B * 0.114); //Gri ton formülü
+
+                    outBitmap.SetPixel(x, y, Color.FromArgb(gray, gray, gray));
+                }
+            }
+
+            return outBitmap;
         }
 
         /// <summary>
@@ -357,6 +465,73 @@ namespace BilgisayarlaGoru.Netlestirme
             return outBuffer;
         }
 
+        public int[,,] SingleNormalization(int[,,] buffer)
+        {
+            int lenght_1 = buffer.GetLength(1);
+            int lenght_2 = buffer.GetLength(2);
+
+            int[,] R = new int[lenght_1, lenght_2];
+            int[,] G = new int[lenght_1, lenght_2];
+            int[,] B = new int[lenght_1, lenght_2];
+
+            for (int i = 0; i < lenght_1; i++)
+            {
+                for (int j = 0; j < lenght_2; j++)
+                {
+                    R[i, j] = buffer[0, i, j];
+                    G[i, j] = buffer[1, i, j];
+                    B[i, j] = buffer[2, i, j];
+                }
+            }
+
+            int[,] Normalization_R = Normalization(R);
+            int[,] Normalization_G = Normalization(G);
+            int[,] Normalization_B = Normalization(B);
+
+            int[,,] RGB = new int[3, lenght_1, lenght_2];
+
+            for (int i = 0; i < lenght_1; i++)
+            {
+                for (int j = 0; j < lenght_2; j++)
+                {
+                    RGB[0, i, j] = Normalization_R[i, j];
+                    RGB[1, i, j] = Normalization_G[i, j];
+                    RGB[2, i, j] = Normalization_B[i, j];
+                }
+            }
+
+            return RGB;
+        }
+
+        public int[,] Normalization(int[,] buffer)
+        {
+            //Pout = ( Pin - MinValue ) * ( ( 255 - 0 ) / ( MaxValue - MinValue ) ) + 0
+            int limitMinVal = 0;
+            int limitMaxVal = 255;
+
+            int min = BufferMin(buffer);
+            int max = BufferMax(buffer);
+
+            var lenght_1 = buffer.GetLength(0);
+            var lenght_2 = buffer.GetLength(1);
+
+            int[,] outBuffer = new int[lenght_1, lenght_2];
+
+            for (int i = 0; i < lenght_1; i++)
+            {
+                for (int j = 0; j < lenght_2; j++)
+                {
+                    int inVal = buffer[i, j];
+
+                    int outVal = (int)((inVal - min) * (decimal)((decimal)(limitMaxVal - limitMinVal) / (decimal)(max - min)) + limitMinVal);
+
+                    outBuffer[i, j] = outVal;
+                }
+            }
+
+            return outBuffer;
+        }
+
         /// <summary>
         /// int[,,] tipindeki resim değerlerinin minimum değerini döner
         /// </summary>
@@ -390,6 +565,38 @@ namespace BilgisayarlaGoru.Netlestirme
                             {
                                 minValue = value;
                             }
+                        }
+                    }
+                }
+            }
+
+            return minValue;
+        }
+
+        public int BufferMin(int[,] buffer)
+        {
+            bool first = true;
+            int minValue = 0;
+
+            var lenght_1 = buffer.GetLength(0);
+            var lenght_2 = buffer.GetLength(1);
+
+            for (int i = 0; i < lenght_1; i++)
+            {
+                for (int j = 0; j < lenght_2; j++)
+                {
+                    int value = buffer[i, j];
+
+                    if (first)
+                    {
+                        minValue = value;
+                        first = false;
+                    }
+                    else
+                    {
+                        if (value < minValue)
+                        {
+                            minValue = value;
                         }
                     }
                 }
@@ -439,6 +646,38 @@ namespace BilgisayarlaGoru.Netlestirme
             return maxValue;
         }
 
+        public int BufferMax(int[,] buffer)
+        {
+            bool first = true;
+            int maxValue = 0;
+
+            var lenght_1 = buffer.GetLength(0);
+            var lenght_2 = buffer.GetLength(1);
+
+            for (int i = 0; i < lenght_1; i++)
+            {
+                for (int j = 0; j < lenght_2; j++)
+                {
+                    int value = buffer[i, j];
+
+                    if (first)
+                    {
+                        maxValue = value;
+                        first = false;
+                    }
+                    else
+                    {
+                        if (value > maxValue)
+                        {
+                            maxValue = value;
+                        }
+                    }
+                }
+            }
+
+            return maxValue;
+        }
+
         protected void OnKeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsNumber(e.KeyChar) & (Keys)e.KeyChar != Keys.Back
@@ -479,6 +718,68 @@ namespace BilgisayarlaGoru.Netlestirme
 
             btn_MeanFilter.Checked = false;
             btn_MedianFilter.Checked = true;
+        }
+
+        private void btn_Normalization_Click(object sender, EventArgs e)
+        {
+            switch (normalizationType)
+            {
+                case NormalizationType.Single:
+                    btn_Normalization_Single.Checked = true;
+                    btn_Normalization_Multiple.Checked = false;
+                    break;
+                case NormalizationType.Multiple:
+                    btn_Normalization_Single.Checked = false;
+                    btn_Normalization_Multiple.Checked = true;
+                    break;
+            }
+        }
+
+        private void btn_Normalization_Multiple_Click(object sender, EventArgs e)
+        {
+            normalizationType = NormalizationType.Multiple;
+
+            btn_Normalization_Single.Checked = false;
+            btn_Normalization_Multiple.Checked = true;
+        }
+
+        private void btn_Normalization_Single_Click(object sender, EventArgs e)
+        {
+            normalizationType = NormalizationType.Single;
+
+            btn_Normalization_Single.Checked = true;
+            btn_Normalization_Multiple.Checked = false;
+        }
+
+        private void btn_Image_Color_Click(object sender, EventArgs e)
+        {
+            switch (imageColor)
+            {
+                case ImageColor.RGB:
+                    btn_Image_Color_RGB.Checked = true;
+                    btn_Image_Color_Gray.Checked = false;
+                    break;
+                case ImageColor.Gray:
+                    btn_Image_Color_RGB.Checked = false;
+                    btn_Image_Color_Gray.Checked = true;
+                    break;
+            }
+        }
+
+        private void btn_Image_Color_RGB_Click(object sender, EventArgs e)
+        {
+            imageColor = ImageColor.RGB;
+
+            btn_Image_Color_RGB.Checked = true;
+            btn_Image_Color_Gray.Checked = false;
+        }
+
+        private void btn_Image_Color_Gray_Click(object sender, EventArgs e)
+        {
+            imageColor = ImageColor.Gray;
+
+            btn_Image_Color_RGB.Checked = false;
+            btn_Image_Color_Gray.Checked = true;
         }
     }
 }
