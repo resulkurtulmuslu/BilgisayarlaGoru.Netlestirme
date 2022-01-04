@@ -46,6 +46,7 @@ namespace BilgisayarlaGoru.Netlestirme
             this.btn_Image_Color_RGB = new System.Windows.Forms.ToolStripMenuItem();
             this.btn_Image_Color_Gray = new System.Windows.Forms.ToolStripMenuItem();
             this.btn_Process = new System.Windows.Forms.ToolStripButton();
+            this.btn_Export = new System.Windows.Forms.ToolStripButton();
             this.btn_Loading = new System.Windows.Forms.ToolStripButton();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label4 = new System.Windows.Forms.Label();
@@ -56,7 +57,7 @@ namespace BilgisayarlaGoru.Netlestirme
             this.picture_Edge = new System.Windows.Forms.PictureBox();
             this.picture_Sharp = new System.Windows.Forms.PictureBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.btn_Export = new System.Windows.Forms.ToolStripButton();
+            this.btn_GaussianFilter = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picture_Smooth)).BeginInit();
@@ -135,7 +136,8 @@ namespace BilgisayarlaGoru.Netlestirme
             // 
             this.btn_Filter.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.btn_MeanFilter,
-            this.btn_MedianFilter});
+            this.btn_MedianFilter,
+            this.btn_GaussianFilter});
             this.btn_Filter.Image = ((System.Drawing.Image)(resources.GetObject("btn_Filter.Image")));
             this.btn_Filter.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.btn_Filter.Name = "btn_Filter";
@@ -146,14 +148,14 @@ namespace BilgisayarlaGoru.Netlestirme
             // btn_MeanFilter
             // 
             this.btn_MeanFilter.Name = "btn_MeanFilter";
-            this.btn_MeanFilter.Size = new System.Drawing.Size(143, 22);
+            this.btn_MeanFilter.Size = new System.Drawing.Size(180, 22);
             this.btn_MeanFilter.Text = "Mean Filtre";
             this.btn_MeanFilter.Click += new System.EventHandler(this.btn_MeanFilter_Click);
             // 
             // btn_MedianFilter
             // 
             this.btn_MedianFilter.Name = "btn_MedianFilter";
-            this.btn_MedianFilter.Size = new System.Drawing.Size(143, 22);
+            this.btn_MedianFilter.Size = new System.Drawing.Size(180, 22);
             this.btn_MedianFilter.Text = "Median Filtre";
             this.btn_MedianFilter.Click += new System.EventHandler(this.btn_MedianFilter_Click);
             // 
@@ -217,6 +219,15 @@ namespace BilgisayarlaGoru.Netlestirme
             this.btn_Process.Size = new System.Drawing.Size(71, 22);
             this.btn_Process.Text = "Netleştir";
             this.btn_Process.Click += new System.EventHandler(this.btn_Process_Click);
+            // 
+            // btn_Export
+            // 
+            this.btn_Export.Image = ((System.Drawing.Image)(resources.GetObject("btn_Export.Image")));
+            this.btn_Export.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btn_Export.Name = "btn_Export";
+            this.btn_Export.Size = new System.Drawing.Size(65, 22);
+            this.btn_Export.Text = "Çıktı Al";
+            this.btn_Export.Click += new System.EventHandler(this.btn_Export_Click);
             // 
             // btn_Loading
             // 
@@ -340,14 +351,12 @@ namespace BilgisayarlaGoru.Netlestirme
             this.label1.Text = "Orijinal Görüntü";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // btn_Export
+            // btn_GaussianFilter
             // 
-            this.btn_Export.Image = ((System.Drawing.Image)(resources.GetObject("btn_Export.Image")));
-            this.btn_Export.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btn_Export.Name = "btn_Export";
-            this.btn_Export.Size = new System.Drawing.Size(65, 22);
-            this.btn_Export.Text = "Çıktı Al";
-            this.btn_Export.Click += new System.EventHandler(this.btn_Export_Click);
+            this.btn_GaussianFilter.Name = "btn_GaussianFilter";
+            this.btn_GaussianFilter.Size = new System.Drawing.Size(180, 22);
+            this.btn_GaussianFilter.Text = "Gaussian Filtresi";
+            this.btn_GaussianFilter.Click += new System.EventHandler(this.btn_GaussianFilter_Click);
             // 
             // MainForm
             // 
@@ -403,5 +412,6 @@ namespace BilgisayarlaGoru.Netlestirme
         private System.Windows.Forms.ToolStripMenuItem btn_Image_Color_RGB;
         private System.Windows.Forms.ToolStripMenuItem btn_Image_Color_Gray;
         private System.Windows.Forms.ToolStripButton btn_Export;
+        private System.Windows.Forms.ToolStripMenuItem btn_GaussianFilter;
     }
 }

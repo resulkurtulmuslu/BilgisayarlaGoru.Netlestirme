@@ -14,7 +14,8 @@ namespace BilgisayarlaGoru.Netlestirme
     public enum Filter
     {
         Mean = 0,
-        Median = 1
+        Median = 1,
+        Gaussian = 2
     }
 
     public enum NormalizationType
@@ -53,7 +54,7 @@ namespace BilgisayarlaGoru.Netlestirme
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            cmb_FilterValue.SelectedIndex = 3;
+            cmb_FilterValue.SelectedIndex = 1;
         }
 
         private void btn_Select_Click(object sender, EventArgs e)
@@ -95,6 +96,9 @@ namespace BilgisayarlaGoru.Netlestirme
                             break;
                         case Filter.Median:
                             smoothBitmap = MedianFilter(originalBitmap);
+                            break;
+                        case Filter.Gaussian:
+                            smoothBitmap = GaussianFilter(originalBitmap);
                             break;
                     }
 
@@ -146,6 +150,9 @@ namespace BilgisayarlaGoru.Netlestirme
                             break;
                         case Filter.Median:
                             smoothBitmap = MedianFilter(grayBitmap);
+                            break;
+                        case Filter.Gaussian:
+                            smoothBitmap = GaussianFilter(grayBitmap);
                             break;
                     }
 
@@ -383,6 +390,50 @@ namespace BilgisayarlaGoru.Netlestirme
                     }
 
                     outBitmap.SetPixel(x, y, Color.FromArgb(R[(numberOfElements - 1) / 2], G[(numberOfElements - 1) / 2], B[(numberOfElements - 1) / 2]));
+                }
+            }
+
+            return outBitmap;
+        }
+
+        private Bitmap GaussianFilter(Bitmap bitmap)
+        {
+            int value = Convert.ToInt16(cmb_FilterValue.SelectedItem);
+
+            int[] gauss = GaussianBlur(value, 1);
+
+            int gaussSum = gauss.ToList().Sum();
+
+            Bitmap outBitmap = new Bitmap(bitmap.Width, bitmap.Height);
+
+            for (int x = (value - 1) / 2; x < bitmap.Width - (value - 1) / 2; x++)
+            {
+                for (int y = (value - 1) / 2; y < bitmap.Height - (value - 1) / 2; y++)
+                {
+                    long sumR = 0, sumG = 0, sumB = 0;
+                    int k = 0;
+
+                    for (int i = -((value - 1) / 2); i <= (value - 1) / 2; i++)
+                    {
+                        for (int j = -((value - 1) / 2); j <= (value - 1) / 2; j++)
+                        {
+                            Color color = bitmap.GetPixel(x + i, y + j);
+
+                            sumR += color.R * gauss[k];
+                            sumG += color.G * gauss[k];
+                            sumB += color.B * gauss[k];
+
+                            k++;
+                        }
+                    }
+
+                    int averageR = (int)(sumR / gaussSum);
+                    int averageG = (int)(sumG / gaussSum);
+                    int averageB = (int)(sumB / gaussSum);
+
+                    Color avarageColor = Color.FromArgb(averageR, averageG, averageB);
+
+                    outBitmap.SetPixel(x, y, avarageColor);
                 }
             }
 
@@ -696,6 +747,38 @@ namespace BilgisayarlaGoru.Netlestirme
             return maxValue;
         }
 
+        public int[] GaussianBlur(int lenght, double weight)
+        {
+            List<int> kernel = new List<int>();
+
+            int foff = (lenght - 1) / 2;
+
+            double distance = 0;
+            double constant = 1d / (Math.Sqrt((2 * Math.PI)) * weight * weight);
+            double scale = 0d;
+
+            for (int y = -foff; y <= foff; y++)
+            {
+                for (int x = -foff; x <= foff; x++)
+                {
+                    distance = Math.Exp(-(((y * y) + (x * x)) / (2 * weight * weight)));
+
+                    if (scale == 0d)
+                    {
+                        scale = 1d / (constant * distance);
+                        kernel.Add(1);
+                    }
+                    else
+                    {
+                        kernel.Add((int)Math.Round((constant * distance * scale)));
+                    }
+
+                }
+            }
+
+            return kernel.ToArray();
+        }
+
         protected void OnKeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsNumber(e.KeyChar) & (Keys)e.KeyChar != Keys.Back
@@ -714,10 +797,17 @@ namespace BilgisayarlaGoru.Netlestirme
                 case Filter.Mean:
                     btn_MeanFilter.Checked = true;
                     btn_MedianFilter.Checked = false;
+                    btn_GaussianFilter.Checked = false;
                     break;
                 case Filter.Median:
                     btn_MeanFilter.Checked = false;
                     btn_MedianFilter.Checked = true;
+                    btn_GaussianFilter.Checked = false;
+                    break;
+                case Filter.Gaussian:
+                    btn_MeanFilter.Checked = false;
+                    btn_MedianFilter.Checked = false;
+                    btn_GaussianFilter.Checked = true;
                     break;
             }
         }
@@ -728,6 +818,7 @@ namespace BilgisayarlaGoru.Netlestirme
 
             btn_MeanFilter.Checked = true;
             btn_MedianFilter.Checked = false;
+            btn_GaussianFilter.Checked = false;
         }
 
         private void btn_MedianFilter_Click(object sender, EventArgs e)
@@ -736,6 +827,16 @@ namespace BilgisayarlaGoru.Netlestirme
 
             btn_MeanFilter.Checked = false;
             btn_MedianFilter.Checked = true;
+            btn_GaussianFilter.Checked = false;
+        }
+
+        private void btn_GaussianFilter_Click(object sender, EventArgs e)
+        {
+            selectFilter = Filter.Gaussian;
+
+            btn_MeanFilter.Checked = false;
+            btn_MedianFilter.Checked = false;
+            btn_GaussianFilter.Checked = true;
         }
 
         private void btn_Normalization_Click(object sender, EventArgs e)
